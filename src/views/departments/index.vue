@@ -9,12 +9,18 @@
         <tree-tools :tree-node="company" :is-root="true" @addDepts="addDepts" />
         <!-- 下面就是树形控件内容了 -->
         <el-tree :data="departs" :props="defaultProps" default-expand-all>
-          <tree-tools slot-scope="{ data }" :tree-node="data" @delDepats="getDepartments" @addDepts="addDepts" />
+          <tree-tools
+            slot-scope="{ data }"
+            :tree-node="data"
+            @delDepats="getDepartments"
+            @addDepts="addDepts"
+            @editDepts="editDepts"
+          />
         </el-tree>
       </el-card>
     </div>
     <!-- 新增表单 弹出层 -->
-    <add-depts :show-dialog.sync="showDialog" :tree-node="node" @addDepts="getDepartments" />
+    <add-depts ref="edit" :show-dialog.sync="showDialog" :tree-node="node" @addDepts="getDepartments" />
   </div>
 </template>
 
@@ -53,9 +59,14 @@ export default {
     },
     // 添加部门
     addDepts(node) {
-      this.showDialog = true
       this.node = node
-      console.log(node)
+      this.showDialog = true
+    },
+    // 修改部门
+    editDepts(node) {
+      this.node = node
+      this.$refs.edit.getDepartDetail(node.id)
+      this.showDialog = true
     }
   }
 

@@ -59,7 +59,7 @@ export default {
         this.$emit('addDepts', this.treeNode)
       } else if (command === 'editDepts') {
         // 修改部门
-
+        this.$emit('editDepts', this.treeNode)
       } else {
         // 删除部门
         // 01.准备删除弹框

@@ -31,8 +31,9 @@
 </template>
 
 <script>
-import { addDepartments, getDepartments } from '@/api/departments'
+import { addDepartments, getDepartments, getDepartDetail, updateDepartments } from '@/api/departments'
 import { getEmployeeSimple } from '@/api/employees'
+
 export default {
   name: 'AddDepts',
   components: {},
@@ -49,15 +50,27 @@ export default {
   },
   data() {
     const checkNameRepeat = async(rule, value, callback) => {
-      const res = await getDepartments()
-      console.log(res)
-      const isRepeat = res.depts.filter(item => item.pid === this.treeNode.id).some(item => item.name === value)
-      console.log(isRepeat)
+      const { depts } = await getDepartments()
+      let isRepeat = false
+      if (this.formData.id) {
+        // 修改--数据校验
+        isRepeat = depts.filter(item => item.id !== this.formData.id && item.pid === this.treeNode.id).some(item => item.name === value)
+      } else {
+        // 添加--数据校验
+        isRepeat = depts.filter(item => item.pid === this.treeNode.id).some(item => item.name === value)
+      }
+
       isRepeat ? callback(new Error(`同级部门下已经有${value}的部门了`)) : callback()
     }
     const checkCodeRepeat = async(rule, value, callback) => {
       const { depts } = await getDepartments()
-      const isRepeat = depts.some(item => item.code === value && value)
+      let isRepeat = false
+      if (this.formData.id) {
+        // 修改
+        isRepeat = depts.some(item => item.id !== this.formData.id && item.code === value && value)
+      } else {
+        isRepeat = depts.some(item => item.code === value && value)
+      }
       isRepeat ? callback(new Error(`组织架构中已经有部门使用${value}编码`)) : callback()
     }
     return {
@@ -105,8 +118,14 @@ export default {
       this.$refs.formDepts.validate(async valid => {
         if (valid) {
           // 校验成功
-          // 发送请求
-          await addDepartments({ ...this.formData, pid: this.treeNode.id })
+          if (this.formData.id) {
+            // 修改
+            await updateDepartments(this.formData)
+          } else {
+            // 发送请求
+            await addDepartments({ ...this.formData, pid: this.treeNode.id })
+          }
+
           // 重新拉取列表
           this.$emit('addDepts')
           // 关闭弹窗
@@ -118,11 +137,23 @@ export default {
     },
     // 关闭弹窗
     closeBtn() {
+      this.formData = {
+        name: '', // 部门名称
+        code: '', // 部门编码
+        manager: '', // 部门管理者
+        introduce: '' // 部门介绍
+
+      }
       // 关闭弹窗
       this.$emit('update:showDialog', false)
       //  重置表单
       this.$refs.formDepts.resetFields()
+    },
+    // 获取部门详情
+    async  getDepartDetail(id) {
+      this.formData = await getDepartDetail(id)
     }
+
   }
 }
 </script>
