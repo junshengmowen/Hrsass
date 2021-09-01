@@ -16,12 +16,18 @@ import '@/icons' // icon
 import '@/permission' // permission control
 
 import * as directives from '@/directives'// 自定义指令
+import * as filters from '@/filters'// 自定义指令
+import component from '@/components'
 
-// 全局注册
+// 全局注册指令
 Object.keys(directives).forEach(key => {
-  console.log(key, directives[key])
   Vue.directive(key, directives[key])
 })
+// 全局注册过滤器
+Object.keys(filters).forEach(key => {
+  Vue.filter(key, filters[key])
+})
+Vue.use(component)
 
 /**
  * If you don't want to use mock-server

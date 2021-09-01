@@ -1,5 +1,6 @@
 // 导入布局路由
 import Layout from '@/layout'
+
 // 导出 审批的路由规则
 export default {
   path: '/employees', // 路径 一级路由
@@ -14,6 +15,15 @@ export default {
         title: '员工管理', // title表示则侧导航菜单文字
         icon: 'people'
       }
+    },
+    {
+      path: 'detail/:id',
+      component: () => import('@/views/employees/detail'),
+      hidden: true,
+      meta: { // 路由元信息
+        title: '员工详情' // title表示则侧导航菜单文字
+      }
     }
   ]
 }
+
