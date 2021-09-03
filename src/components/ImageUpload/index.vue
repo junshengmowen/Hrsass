@@ -24,8 +24,8 @@
 <script>
 import COS from 'cos-js-sdk-v5'
 var cos = new COS({
-  SecretId: 'AKIDJRItEI5aqqZ3GCsIRKwGJ6bpmSs1sSmp',
-  SecretKey: 'nJZYFfogHacOt74k9H8i25qKYVBaiZ9S'
+  SecretId: '腾讯云的存储通id',
+  SecretKey: '腾讯云的存储通id'
 })
 export default {
   name: 'ImageUpload',
